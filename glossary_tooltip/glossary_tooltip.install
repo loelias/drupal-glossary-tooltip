@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function glossary_tooltip_install() {
+  _glossary_tooltip_create_vocabulary();
+}
+
+/**
+ * Create the glossary vocabulary and terms from a JSON file.
+ */
+function _glossary_tooltip_create_vocabulary() {
+  $vocabulary = \Drupal\taxonomy\Entity\Vocabulary::create([
+    'vid' => 'glossary',
+    'name' => 'Glossary',
+  ]);
+  $vocabulary->save();
+
+  $termsJson = file_get_contents(drupal_get_path('module', 'glossary_tooltip') . '/terms.json');
+  $terms = json_decode($termsJson, TRUE);
+
+  foreach ($terms as $termData) {
+    $term = \Drupal\taxonomy\Entity\Term::create([
+      'vid' => 'glossary',
+      'name' => $termData['title'],
+      'description' => $termData['description'],
+    ]);
+    $term->save();
+  }
+}

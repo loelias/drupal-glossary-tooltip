@@ -1,0 +1,14 @@
+name: 'Glossary Tooltip'
+type: module
+description: 'The words correspondent / identical to the items included in the glossary vocabulary are highlighted '
+package: Custom
+version: 1.x
+core_version_requirement: ^9 || ^8
+dependencies:
+  - drupal:taxonomy
+  - drupal:field
+  - drupal:views
+  - drupal:node
+  - drupal:jquery
+libraries:
+  - glossary_tooltip/glossary_tooltip

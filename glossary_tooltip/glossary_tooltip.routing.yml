@@ -1,0 +1,7 @@
+glossary_tooltip.term_page:
+  path: '/glossary/{taxonomy_term}'
+  defaults:
+    _controller: '\Drupal\glossary_tooltip\Controller\TermController::termPage'
+    _title: 'Term Page'
+  requirements:
+    _permission: 'access content'

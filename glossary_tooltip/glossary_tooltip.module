@@ -1,0 +1,45 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
+use Drupal\taxonomy\TermInterface;
+
+/**
+ * Implements hook_entity_view() for node entities.
+ */
+function glossary_tooltip_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  if ($entity instanceof \Drupal\node\NodeInterface && $entity->hasField('body')) {
+    $bodyField = $entity->get('body');
+    $bodyValue = $bodyField->value;
+
+    if (!empty($bodyValue)) {
+      $glossaryTerms = _glossary_tooltip_get_glossary_terms();
+
+      foreach ($glossaryTerms as $term) {
+        $termPattern = preg_quote($term->getName(), '/');
+        $pattern = '/\b(' . $termPattern . ')\b/i';
+        $description = $term->getDescription();
+
+        $bodyValue = preg_replace_callback($pattern, function ($matches) use ($description) {
+          return '<span class="glossary-term" title="' . $description . '">' . $matches[0] . '</span>';
+        }, $bodyValue);
+      }
+
+      $bodyField->setValue($bodyValue);
+      $build['body'][0]['#text'] = $bodyValue;
+    }
+  }
+}
+
+/**
+ * Helper function to retrieve the glossary terms.
+ *
+ * @return \Drupal\taxonomy\Entity\TermInterface[]
+ *   Array of glossary terms.
+ */
+function _glossary_tooltip_get_glossary_terms() {
+  $term_storage = \Drupal::entityTypeManager()->getStorage('taxonomy_term');
+  $glossary_terms = $term_storage->loadByProperties(['vid' => 'glossary']);
+  return $glossary_terms;
+}

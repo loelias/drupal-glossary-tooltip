@@ -1,0 +1,9 @@
+.glossary-term {
+  cursor: pointer;
+  text-decoration: underline;
+  background-color: lightcyan;
+}
+  
+.ui-tooltip {
+  max-width: 300px;
+}
